@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 import os
 from ..database import get_db, User
 
@@ -18,7 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Pydantic models
 class UserCreate(BaseModel):
-    email: EmailStr
+    email: str
     username: str
     password: str
     full_name: str = None

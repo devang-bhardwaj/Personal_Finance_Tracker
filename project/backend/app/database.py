@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, ForeignKey, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime
 import os
@@ -9,10 +8,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Database connection
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/finance_tracker")
+# Database connection - using SQLite for local development
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./finance_tracker.db")
 
-engine = create_engine(DATABASE_URL)
+# SQLite doesn't support some PostgreSQL features, so we'll add check_same_thread=False for SQLite
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
