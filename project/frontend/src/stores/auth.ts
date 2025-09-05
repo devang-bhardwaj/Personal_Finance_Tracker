@@ -7,7 +7,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 export interface User {
   id: string
   email: string
-  name: string
+  username: string
+  full_name: string
+  is_active: boolean
   created_at: string
 }
 
@@ -30,34 +32,20 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (email: string, password: string) => {
         try {
-          const response = await axios.post(`${API_URL}/auth/login`, {
-            username: email, // FastAPI expects username field
+          const response = await axios.post(`${API_URL}/api/auth/login`, {
+            email,
             password,
           }, {
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            transformRequest: [(data) => {
-              const params = new URLSearchParams()
-              for (const key in data) {
-                params.append(key, data[key])
-              }
-              return params
-            }]
+              'Content-Type': 'application/json',
+            }
           })
 
-          const { access_token } = response.data
+          const { access_token, user } = response.data
           
-          // Get user profile
-          const userResponse = await axios.get(`${API_URL}/auth/me`, {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          })
-
           set({
             token: access_token,
-            user: userResponse.data,
+            user: user,
             isAuthenticated: true,
           })
         } catch (error: any) {
@@ -67,24 +55,18 @@ export const useAuthStore = create<AuthState>()(
 
       register: async (name: string, email: string, password: string) => {
         try {
-          const response = await axios.post(`${API_URL}/auth/register`, {
-            name,
+          const response = await axios.post(`${API_URL}/api/auth/register`, {
+            full_name: name,
             email,
+            username: email, // Use email as username for simplicity
             password,
           })
 
-          const { access_token } = response.data
+          const { access_token, user } = response.data
           
-          // Get user profile
-          const userResponse = await axios.get(`${API_URL}/auth/me`, {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          })
-
           set({
             token: access_token,
-            user: userResponse.data,
+            user: user,
             isAuthenticated: true,
           })
         } catch (error: any) {
@@ -105,7 +87,7 @@ export const useAuthStore = create<AuthState>()(
         if (!token) return
 
         try {
-          const userResponse = await axios.get(`${API_URL}/auth/me`, {
+          const userResponse = await axios.get(`${API_URL}/api/auth/me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
