@@ -90,3 +90,5 @@ docker-volumes/
 # Deployment files
 .vercel/
 .netlify/
+
+start the app/

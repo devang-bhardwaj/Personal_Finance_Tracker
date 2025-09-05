@@ -6,6 +6,8 @@ import {
   HomeIcon,
   CreditCardIcon,
   ChartBarIcon,
+  ChartPieIcon,
+  TrophyIcon,
   CogIcon,
   UserIcon,
   ArrowRightOnRectangleIcon,
@@ -21,7 +23,8 @@ interface DashboardLayoutProps {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Transactions', href: '/transactions', icon: CreditCardIcon },
-  { name: 'Budgets', href: '/budgets', icon: ChartBarIcon },
+  { name: 'Budgets', href: '/budgets', icon: ChartPieIcon },
+  { name: 'Goals', href: '/goals', icon: TrophyIcon },
   { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
   { name: 'Settings', href: '/settings', icon: CogIcon },
 ]
